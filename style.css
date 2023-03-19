@@ -1,0 +1,37 @@
+html {
+  border-collapse: collapse;
+  font-family: Poppins, sans-serif;
+}
+
+.container {
+  margin: 0 auto;
+  max-width: 800px;
+  padding: 20px;
+}
+
+h1 {
+  text-align: center;
+}
+
+.form {
+  margin-bottom: 20px;
+}
+
+label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+textarea {
+  width: 100%;
+}
+
+button {
+  display: block;
+  margin: 10px 0;
+}
+
+table {
+  margin: 20px 0;
+}

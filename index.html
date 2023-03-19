@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Word Search Generator</title>
+    <link rel="stylesheet" href="style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&amp;display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <div class="container">
+      <h1>Word Search Generator</h1>
+      <div class="form">
+        <label for="word-list">Enter words:</label>
+        <textarea id="word-list" rows="5"></textarea>
+        <button id="generate-btn">Generate Word Search</button>
+        <button id="solve-btn" style="display: none;">Solve Word Search</button>
+      </div>
+      <div id="word-search-container"></div>
+    </div>
+
+    <script src="wordsearch.js"></script>
+  </body>
+</html>
