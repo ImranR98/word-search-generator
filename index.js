@@ -82,10 +82,17 @@ solveButton.addEventListener("click", () => {
     wordSearchContainer.innerHTML = wordSearchHtml
 })
 saveButton.addEventListener("click", () => {
-    saveDivAsPng('word-search-table', 'word_search_' + (Math.random() * 10000).toString(), 5)
+    saveDivAsPng('word-search-table', 'word_search_' + Math.ceil((Math.random() * 10000)).toString(), 5)
 })
-function saveDivAsPng(divId, filename, scale = 5) {
+function saveDivAsPng(divId, filename) {
+    const defaultScale = 5
+    var scale = prompt('Enter size multiplier (default is ' + defaultScale + ')') || defaultScale
     const element = document.getElementById(divId)
+    try {
+        Number.parseInt(scale)
+    } catch (e) {
+        scale = defaultScale
+    }
     html2canvas(element, {
         scale: scale,
         useCORS: true,
