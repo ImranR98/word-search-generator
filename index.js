@@ -6,7 +6,7 @@ function renderWordSearch(grid, answers) {
 
     let html = `<table id="word-search-table" style="border-spacing: 0; border-collapse: separate; border: ${borderSize}px solid black;">`
     for (let i = 0; i < numRows; i++) {
-        html += '<tr>'
+        html += '<tr">'
         for (let j = 0; j < numCols; j++) {
             let isBold = false
             const cell = grid[i][j]
@@ -26,7 +26,7 @@ function renderWordSearch(grid, answers) {
                     }
                 }
             }
-            html += '<td style="width: ' + cellSizeRem + 'rem; height: ' + cellSizeRem + 'rem; border: ' + borderSize + 'px solid black; background-color: ' + (isBold ? color : 'White') + '; font-weight: ' + (isBold ? 'bold' : 'normal') + '; text-align: center; font-size: ' + (cellSizeRem * 10) + 'px;">' + cell + '</td>'
+            html += '<td style="min-width: ' + cellSizeRem + 'rem; min-height: ' + cellSizeRem + 'rem; border: ' + borderSize + 'px solid black; background-color: ' + (isBold ? color : 'White') + '; font-weight: ' + (isBold ? 'bold' : 'normal') + '; text-align: center; font-size: ' + (cellSizeRem * 10) + 'px;">' + cell + '</td>'
         }
         html += '</tr>'
     }
