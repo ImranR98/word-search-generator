@@ -1,11 +1,10 @@
 function renderWordSearch(grid, answers) {
     const cellSizeRem = 3
     const borderSize = 2
-    const font = ['https://fonts.googleapis.com/css2?family=Poppins&display=swap', 'Poppins']
     const numRows = grid.length
     const numCols = grid[0].length
 
-    let html = `<link href="${font[0]}" rel="stylesheet"><table id="word-search-table" style="border-spacing: 0; border-collapse: separate; border: ${borderSize}px solid black; font-family: ${font[1]}, sans-serif">`
+    let html = `<table id="word-search-table" style="border-spacing: 0; border-collapse: separate; border: ${borderSize}px solid black;">`
     for (let i = 0; i < numRows; i++) {
         html += '<tr>'
         for (let j = 0; j < numCols; j++) {
@@ -48,9 +47,13 @@ const solveButton = document.getElementById("solve-btn")
 const saveButton = document.getElementById("save-btn")
 const wordSearchContainer = document.getElementById("word-search-container")
 
+const getWords = () => {
+    return wordListInput.value.split(',').join('\n').split("\n").map((word) => word.toLowerCase().trim()).filter((word) => word.length > 0)
+}
+
 // Add event listeners to buttons
 generateButton.addEventListener("click", () => {
-    const words = wordListInput.toLowerCase().value.split(',').join('\n').split("\n").map((word) => word.trim()).filter((word) => word.length > 0)
+    const words = getWords()
     const size = Math.max(Math.ceil(Math.sqrt(words.reduce((sum, word) => sum + word.length, 0) * 2)), 10)
     const grid = fillEmptyCells(placeWords(generateGrid(size), words))
     const wordSearchHtml = renderWordSearch(grid)
@@ -73,7 +76,7 @@ solveButton.addEventListener("click", () => {
     }
 
     // Get the list of words from the input
-    const words = wordListInput.value.split(',').join('\n').split("\n").map((word) => word.trim()).filter((word) => word.length > 0)
+    const words = getWords()
     // Solve the word search
     const solutions = solveWordSearch(grid, words)
 
