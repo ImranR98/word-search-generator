@@ -50,7 +50,7 @@ const wordSearchContainer = document.getElementById("word-search-container")
 
 // Add event listeners to buttons
 generateButton.addEventListener("click", () => {
-    const words = wordListInput.value.split(',').join('\n').split("\n").map((word) => word.trim()).filter((word) => word.length > 0)
+    const words = wordListInput.toLowerCase().value.split(',').join('\n').split("\n").map((word) => word.trim()).filter((word) => word.length > 0)
     const size = Math.max(Math.ceil(Math.sqrt(words.reduce((sum, word) => sum + word.length, 0) * 2)), 10)
     const grid = fillEmptyCells(placeWords(generateGrid(size), words))
     const wordSearchHtml = renderWordSearch(grid)
