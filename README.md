@@ -4,4 +4,4 @@ Self explanatory.
 
 ## Screenshot
 
-<img src="./screenshot.png" style="width: 720px;">
+<img src="./screenshot.png" style="height: 512px;">
