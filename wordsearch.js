@@ -7,7 +7,7 @@ const directions = [
     [-1, 1],  // up-right
     [1, -1],   // down-left
     [-1, -1],  // up-left
-    
+
 ]
 
 // Function to generate a grid of a given size
@@ -97,8 +97,8 @@ function solveWordSearch(grid, words) {
 }
 
 function checkWord(row, col, word, grid) {
-    const res = [[row, col]]
     for (let [deltaRow, deltaCol] of directions) {
+        const res = [[row, col]]
         let r = row + deltaRow
         let c = col + deltaCol
         let i = 1
