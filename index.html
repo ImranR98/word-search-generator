@@ -8,6 +8,17 @@
   <link rel="stylesheet" href="style.css" />
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://fonts.googleapis.com/css2?family=Poppins&amp;display=swap" rel="stylesheet">
+  <style>
+    #word-search-container {
+      overflow-x: scroll;
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    #word-search-container::-webkit-scrollbar {
+      display: none;
+    }
+  </style>
 </head>
 
 <body>
@@ -22,7 +33,7 @@
       <button id="solve-btn" style="display: none;">Solve Word Search</button>
       <button id="save-btn" style="display: none;">Save as Image</button>
     </div>
-    <div id="word-search-container" style="overflow-x: scroll;"></div>
+    <div id="word-search-container"></div>
   </div>
 
   <script src="wordsearch.js"></script>

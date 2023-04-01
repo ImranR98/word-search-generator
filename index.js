@@ -81,8 +81,12 @@ const getWords = () => {
 // Add event listeners to buttons
 generateButton.addEventListener("click", () => {
     const words = getWords()
+    console.log('Words: ', words)
     const size = Math.max(...[...words.map(w => w.length), Math.ceil(Math.sqrt(words.reduce((sum, word) => sum + word.length, 0) * 2))])
-    const grid = fillEmptyCells(placeWords(generateGrid(size), words, getPickedDirections()))
+    console.log('Size: ' + size)
+    const dirs = getPickedDirections()
+    console.log('Picked directions: ', dirs)
+    const grid = fillEmptyCells(placeWords(generateGrid(size), words, dirs))
     const wordSearchHtml = renderWordSearch(grid)
     wordSearchContainer.innerHTML = wordSearchHtml
     solveButton.style.display = 'block'

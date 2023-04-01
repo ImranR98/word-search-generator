@@ -26,6 +26,7 @@ function generateGrid(size) {
 function placeWords(grid, words, directions) {
     for (const word of words) {
         let placed = false
+        console.log('Placing: ', word)
         while (!placed) {
             // Choose a random starting position and direction
             const startX = Math.floor(Math.random() * grid.length)
