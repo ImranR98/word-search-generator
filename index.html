@@ -2,27 +2,32 @@
 
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Word Search Generator</title>
-    <link rel="stylesheet" href="style.css" />
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins&amp;display=swap" rel="stylesheet">
-  </head>
-  <body>
-    <div class="container">
-      <h1>Word Search Generator</h1>
-      <div class="form">
-        <label for="word-list">Enter words:</label>
-        <textarea id="word-list" rows="5"></textarea>
-        <button id="generate-btn">Generate Word Search</button>
-        <button id="solve-btn" style="display: none;">Solve Word Search</button>
-        <button id="save-btn" style="display: none;">Save as Image</button>
-      </div>
-      <div id="word-search-container" style="overflow-x: scroll;"></div>
-    </div>
 
-    <script src="wordsearch.js"></script>
-    <script src="index.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.3.2/html2canvas.min.js"></script>
-  </body>
+<head>
+  <title>Word Search Generator</title>
+  <link rel="stylesheet" href="style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins&amp;display=swap" rel="stylesheet">
+</head>
+
+<body>
+  <div class="container">
+    <h1>Word Search Generator</h1>
+    <div class="form">
+      <label for="word-list">Enter words:</label>
+      <textarea id="word-list" rows="5"></textarea>
+      <label for="directionsDiv" style="margin-top: 1rem;">Directions: </label>
+      <div id="directionsDiv" style="display: flex; flex-wrap: wrap;"></div>
+      <button id="generate-btn">Generate Word Search</button>
+      <button id="solve-btn" style="display: none;">Solve Word Search</button>
+      <button id="save-btn" style="display: none;">Save as Image</button>
+    </div>
+    <div id="word-search-container" style="overflow-x: scroll;"></div>
+  </div>
+
+  <script src="wordsearch.js"></script>
+  <script src="index.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.3.2/html2canvas.min.js"></script>
+</body>
+
 </html>

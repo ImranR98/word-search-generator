@@ -1,3 +1,30 @@
+function fillDirectionsDiv() {
+    let directionsDiv = document.getElementById("directionsDiv")
+    directions.forEach(([dx, dy, dirName]) => {
+        let label = document.createElement("label")
+        let checkbox = document.createElement("input")
+        checkbox.type = "checkbox"
+        checkbox.name = dirName
+        checkbox.value = dirName
+        checkbox.checked = true
+        label.style="margin-right: 0.5rem; margin-bottom: 1rem"
+        label.appendChild(checkbox)
+        label.appendChild(document.createTextNode(dirName))
+        directionsDiv.appendChild(label)
+    })
+}
+
+function getPickedDirections() {
+    var checkedValues = []
+    var checkboxes = directionsDiv.getElementsByTagName("input")
+    for (var i = 0; i < checkboxes.length; i++) {
+        if (checkboxes[i].type === "checkbox" && checkboxes[i].checked) {
+            checkedValues.push(checkboxes[i].value)
+        }
+    }
+    return directions.filter(([dx, dy, n]) => checkedValues.includes(n))
+}
+
 function renderWordSearch(grid, answers) {
     const cellSizeRem = 3
     const borderSize = 2
@@ -55,7 +82,7 @@ const getWords = () => {
 generateButton.addEventListener("click", () => {
     const words = getWords()
     const size = Math.max(...[...words.map(w => w.length), Math.ceil(Math.sqrt(words.reduce((sum, word) => sum + word.length, 0) * 2))])
-    const grid = fillEmptyCells(placeWords(generateGrid(size), words))
+    const grid = fillEmptyCells(placeWords(generateGrid(size), words, getPickedDirections()))
     const wordSearchHtml = renderWordSearch(grid)
     wordSearchContainer.innerHTML = wordSearchHtml
     solveButton.style.display = 'block'
@@ -89,7 +116,7 @@ saveButton.addEventListener("click", () => {
 })
 function saveDivAsPng(divId, filename) {
     const defaultScale = 5
-    var scale = prompt('Enter size multiplier (default is ' + defaultScale + ')') || defaultScale
+    let scale = prompt('Enter size multiplier (default is ' + defaultScale + ')') || defaultScale
     const element = document.getElementById(divId)
     try {
         Number.parseInt(scale)
@@ -107,3 +134,6 @@ function saveDivAsPng(divId, filename) {
         link.click()
     })
 }
+
+
+fillDirectionsDiv()

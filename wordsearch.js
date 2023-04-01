@@ -1,12 +1,12 @@
 const directions = [
-    [0, 1],   // right
-    [0, -1],   // left
-    [1, 0],   // down
-    [-1, 0],   // up
-    [1, 1],   // down-right
-    [-1, 1],  // up-right
-    [1, -1],   // down-left
-    [-1, -1],  // up-left
+    [0, 1, 'right'],
+    [0, -1, 'left'],
+    [1, 0, 'down'],
+    [-1, 0, 'up'],
+    [1, 1, 'down-right'],
+    [-1, 1, 'up-right'],
+    [1, -1, 'down-left'],
+    [-1, -1, 'up-left'],
 
 ]
 
@@ -23,7 +23,7 @@ function generateGrid(size) {
 }
 
 // Function to place words in a grid
-function placeWords(grid, words) {
+function placeWords(grid, words, directions) {
     for (const word of words) {
         let placed = false
         while (!placed) {
@@ -97,7 +97,7 @@ function solveWordSearch(grid, words) {
 }
 
 function checkWord(row, col, word, grid) {
-    for (let [deltaRow, deltaCol] of directions) {
+    for (let [deltaRow, deltaCol, dirName] of directions) {
         const res = [[row, col]]
         let r = row + deltaRow
         let c = col + deltaCol
