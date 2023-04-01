@@ -54,7 +54,7 @@ const getWords = () => {
 // Add event listeners to buttons
 generateButton.addEventListener("click", () => {
     const words = getWords()
-    const size = Math.max(Math.ceil(Math.sqrt(words.reduce((sum, word) => sum + word.length, 0) * 2)), 10)
+    const size = Math.max(...[...words.map(w => w.length), Math.ceil(Math.sqrt(words.reduce((sum, word) => sum + word.length, 0) * 2))])
     const grid = fillEmptyCells(placeWords(generateGrid(size), words))
     const wordSearchHtml = renderWordSearch(grid)
     wordSearchContainer.innerHTML = wordSearchHtml

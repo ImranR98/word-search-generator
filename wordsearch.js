@@ -41,8 +41,6 @@ function placeWords(grid, words) {
 
 // Function to try to place a word in a given direction
 function tryPlaceWord(grid, word, startX, startY, direction) {
-    const dx = [0, 1, 1, 1, 0]
-    const dy = [-1, -1, 0, 1, 1]
     const len = word.length
     const endX = startX + direction[0] * (len - 1)
     const endY = startY + direction[1] * (len - 1)
