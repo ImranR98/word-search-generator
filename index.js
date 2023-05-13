@@ -74,6 +74,12 @@ const solveButton = document.getElementById("solve-btn")
 const saveButton = document.getElementById("save-btn")
 const wordSearchContainer = document.getElementById("word-search-container")
 
+var solved = false
+const toggleSolved = (override) => {
+    solved = override == undefined ? !solved : override
+    solveButton.innerHTML = (solved ? 'Unsolve' : 'Solve') + ' Word Search' 
+}
+
 const getWords = () => {
     return wordListInput.value.split(',').join('\n').split("\n").map((word) => word.toLowerCase().trim()).filter((word) => word.length > 0)
 }
@@ -91,6 +97,7 @@ generateButton.addEventListener("click", () => {
     wordSearchContainer.innerHTML = wordSearchHtml
     solveButton.style.display = 'block'
     saveButton.style.display = 'block'
+    toggleSolved(false)
 })
 solveButton.addEventListener("click", () => {
     // Get the current word search grid
@@ -112,8 +119,9 @@ solveButton.addEventListener("click", () => {
     const solutions = solveWordSearch(grid, words)
 
     // Render the word search
-    const wordSearchHtml = renderWordSearch(grid, solutions)
+    const wordSearchHtml = renderWordSearch(grid, solved ? null : solutions)
     wordSearchContainer.innerHTML = wordSearchHtml
+    toggleSolved()
 })
 saveButton.addEventListener("click", () => {
     saveDivAsPng('word-search-table', 'word_search_' + Math.ceil((Math.random() * 10000)).toString(), 5)
