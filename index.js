@@ -26,8 +26,9 @@ function getPickedDirections() {
 }
 
 function renderWordSearch(grid, answers) {
-    const cellSizeRem = 3
+    const cellSizeRem = 4
     const borderSize = 2
+    const fontSizeRem = 2
     const numRows = grid.length
     const numCols = grid[0].length
 
@@ -53,7 +54,7 @@ function renderWordSearch(grid, answers) {
                     }
                 }
             }
-            html += '<td style="min-width: ' + cellSizeRem + 'rem; min-height: ' + cellSizeRem + 'rem; border: ' + borderSize + 'px solid black; background-color: ' + (isBold ? color : 'White') + '; font-weight: ' + (isBold ? 'bold' : 'normal') + '; text-align: center; font-size: ' + (cellSizeRem * 10) + 'px;">' + cell + '</td>'
+            html += '<td style="width: ' + cellSizeRem + 'rem; height: ' + cellSizeRem + 'rem; border: ' + borderSize + 'px solid black; background-color: ' + (isBold ? color : 'White') + '; font-weight: ' + (isBold ? 'bold' : 'normal') + '; text-align: center; font-size: ' + fontSizeRem + 'rem;">' + cell + '</td>'
         }
         html += '</tr>'
     }
