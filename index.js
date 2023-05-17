@@ -1,3 +1,12 @@
+const wordListInput = document.getElementById("word-list")
+const generateButton = document.getElementById("generate-btn")
+const solveButton = document.getElementById("solve-btn")
+const saveButton = document.getElementById("save-btn")
+const wordSearchContainer = document.getElementById("word-search-container")
+const cellSizeInput = document.getElementById("cell-size-input")
+const borderThicknessInput = document.getElementById("border-thickness-input")
+const fontSizeInput = document.getElementById("font-size-input")
+
 function fillDirectionsDiv() {
     let directionsDiv = document.getElementById("directionsDiv")
     directions.forEach(([dx, dy, dirName]) => {
@@ -26,13 +35,13 @@ function getPickedDirections() {
 }
 
 function renderWordSearch(grid, answers) {
-    const cellSizeRem = 4
-    const borderSize = 2
-    const fontSizeRem = 2
+    const cellSizePx = !!cellSizeInput.value ? cellSizeInput.value : 64
+    const borderSizePx = !!borderThicknessInput.value ? borderThicknessInput.value : 2
+    const fontSizePx = !!fontSizeInput.value ? fontSizeInput.value : 32
     const numRows = grid.length
     const numCols = grid[0].length
 
-    let html = `<table id="word-search-table" style="border-spacing: 0; border-collapse: separate; border: ${borderSize}px solid black;">`
+    let html = `<table id="word-search-table" style="border-spacing: 0; border-collapse: separate; border: ${borderSizePx}px solid black;">`
     for (let i = 0; i < numRows; i++) {
         html += '<tr">'
         for (let j = 0; j < numCols; j++) {
@@ -54,7 +63,7 @@ function renderWordSearch(grid, answers) {
                     }
                 }
             }
-            html += '<td style="width: ' + cellSizeRem + 'rem; height: ' + cellSizeRem + 'rem; border: ' + borderSize + 'px solid black; background-color: ' + (isBold ? color : 'White') + '; font-weight: ' + (isBold ? 'bold' : 'normal') + '; text-align: center; font-size: ' + fontSizeRem + 'rem;">' + cell + '</td>'
+            html += '<td style="min-width: ' + cellSizePx + 'px; width: ' + cellSizePx + 'px; height: ' + cellSizePx + 'px; border: ' + borderSizePx + 'px solid black; background-color: ' + (isBold ? color : 'White') + '; font-weight: ' + (isBold ? 'bold' : 'normal') + '; text-align: center; font-size: ' + fontSizePx + 'px;">' + cell + '</td>'
         }
         html += '</tr>'
     }
@@ -67,13 +76,6 @@ function getColor(index) {
     const colors = ['Aquamarine', 'Chartreuse', 'CornflowerBlue', 'Cyan', 'Gold', 'GreenYellow', 'PaleVioletRed', 'SpringGreen']
     return colors[index % colors.length]
 }
-
-// Select elements from the DOM
-const wordListInput = document.getElementById("word-list")
-const generateButton = document.getElementById("generate-btn")
-const solveButton = document.getElementById("solve-btn")
-const saveButton = document.getElementById("save-btn")
-const wordSearchContainer = document.getElementById("word-search-container")
 
 var solved = false
 const toggleSolved = (override) => {
