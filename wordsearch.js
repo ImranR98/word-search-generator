@@ -85,7 +85,7 @@ function solveWordSearch(grid, words) {
     for (let word of words) {
         for (let i = 0; i < grid.length; i++) {
             for (let j = 0; j < grid[i].length; j++) {
-                if (grid[i][j] === word[0]) {
+                if (grid[i][j].toLowerCase() === word[0].toLowerCase()) {
                     const foundIndices = checkWord(i, j, word, grid)
                     if (foundIndices) {
                         wordIndices[word] = foundIndices
@@ -104,7 +104,8 @@ function checkWord(row, col, word, grid) {
         let c = col + deltaCol
         let i = 1
         for (; i < word.length && r >= 0 && r < grid.length && c >= 0 && c < grid[r].length; i++) {
-            if (grid[r][c] !== word[i]) {
+            console.log(grid[r][c], word[i])
+            if (grid[r][c].toLowerCase() !== word[i].toLowerCase()) {
                 break
             }
             res.push([r, c])

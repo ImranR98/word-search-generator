@@ -16,7 +16,7 @@ function fillDirectionsDiv() {
         checkbox.name = dirName
         checkbox.value = dirName
         checkbox.checked = true
-        label.style="margin-right: 0.5rem; margin-bottom: 1rem"
+        label.style = "margin-right: 0.5rem; margin-bottom: 1rem"
         label.appendChild(checkbox)
         label.appendChild(document.createTextNode(dirName))
         directionsDiv.appendChild(label)
@@ -46,7 +46,9 @@ function renderWordSearch(grid, answers) {
         html += '<tr">'
         for (let j = 0; j < numCols; j++) {
             let isBold = false
-            const cell = grid[i][j]
+            let cell = grid[i][j]
+            const upperCase = document.getElementById('uppercase-checkbox').checked
+            cell = upperCase ? cell.toUpperCase() : cell.toLowerCase()
             let color = 'black'
             if (!answers) {
                 answers = {}
@@ -80,11 +82,11 @@ function getColor(index) {
 var solved = false
 const toggleSolved = (override) => {
     solved = override == undefined ? !solved : override
-    solveButton.innerHTML = (solved ? 'Unsolve' : 'Solve') + ' Word Search' 
+    solveButton.innerHTML = (solved ? 'Unsolve' : 'Solve') + ' Word Search'
 }
 
 const getWords = () => {
-    return wordListInput.value.split(',').join('\n').split("\n").map((word) => word.toLowerCase().trim()).filter((word) => word.length > 0)
+    return wordListInput.value.split(',').join('\n').split("\n").map((word) => word.trim()).filter((word) => word.length > 0)
 }
 
 // Add event listeners to buttons
