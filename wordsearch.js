@@ -26,7 +26,6 @@ function generateGrid(size) {
 function placeWords(grid, words, directions) {
     for (const word of words) {
         let placed = false
-        console.log('Placing: ', word)
         while (!placed) {
             // Choose a random starting position and direction
             const startX = Math.floor(Math.random() * grid.length)
@@ -104,7 +103,6 @@ function checkWord(row, col, word, grid) {
         let c = col + deltaCol
         let i = 1
         for (; i < word.length && r >= 0 && r < grid.length && c >= 0 && c < grid[r].length; i++) {
-            console.log(grid[r][c], word[i])
             if (grid[r][c].toLowerCase() !== word[i].toLowerCase()) {
                 break
             }

@@ -86,17 +86,14 @@ const toggleSolved = (override) => {
 }
 
 const getWords = () => {
-    return wordListInput.value.split(',').join('\n').split("\n").map((word) => word.trim()).filter((word) => word.length > 0)
+    return wordListInput.value.split(',').join('\n').split("\n").map((word) => word.trim().split(' ').join('')).filter((word) => word.length > 0)
 }
 
 // Add event listeners to buttons
 generateButton.addEventListener("click", () => {
     const words = getWords()
-    console.log('Words: ', words)
     const size = Math.max(...[...words.map(w => w.length), Math.ceil(Math.sqrt(words.reduce((sum, word) => sum + word.length, 0) * 2))])
-    console.log('Size: ' + size)
     const dirs = getPickedDirections()
-    console.log('Picked directions: ', dirs)
     const grid = fillEmptyCells(placeWords(generateGrid(size), words, dirs))
     const wordSearchHtml = renderWordSearch(grid)
     wordSearchContainer.innerHTML = wordSearchHtml
