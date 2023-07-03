@@ -35,3 +35,30 @@ button {
 table {
   margin: 20px 0;
 }
+
+.tooltip {
+  position: relative;
+  /* display: inline-block; */
+  /* border-bottom: 1px dotted black; */
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  /* width: 4rem; */
+  background-color: rgba(0, 0, 0, 255);
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  
+  /* Position the tooltip */
+  position: absolute;
+  z-index: 1;
+  bottom: 5%;
+  left: 50%;
+  margin-left: -2rem;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}

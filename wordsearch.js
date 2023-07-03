@@ -1,12 +1,12 @@
 const directions = [
-    [0, 1, 'right'],
-    [0, -1, 'left'],
-    [1, 0, 'down'],
-    [-1, 0, 'up'],
-    [1, 1, 'down-right'],
-    [-1, 1, 'up-right'],
-    [1, -1, 'down-left'],
-    [-1, -1, 'up-left'],
+    [0, 1, 'right', String.fromCodePoint(0x27A1)],
+    [0, -1, 'left', String.fromCodePoint(0x2B05)],
+    [1, 0, 'down', String.fromCodePoint(0x2B07)],
+    [-1, 0, 'up', String.fromCodePoint(0x2B06)],
+    [1, 1, 'down-right', String.fromCodePoint(0x2198)],
+    [-1, 1, 'up-right', String.fromCodePoint(0x2197)],
+    [1, -1, 'down-left', String.fromCodePoint(0x2199)],
+    [-1, -1, 'up-left', String.fromCodePoint(0x2196)],
 
 ]
 
@@ -22,8 +22,19 @@ function generateGrid(size) {
     return grid
 }
 
+// Function to place words in a grid given predefined indices
+function placeWordsManual(grid, words) {
+    for (const word in words) {
+        var i = 0
+        for (var [x,y] of words[word]) {
+            grid[x][y] = word[i++]
+        }
+    }
+    return grid
+}
+
 // Function to place words in a grid
-function placeWords(grid, words, directions) {
+function placeWordsAuto(grid, words, directions) {
     for (const word of words) {
         let placed = false
         while (!placed) {
