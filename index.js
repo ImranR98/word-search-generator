@@ -10,16 +10,17 @@ const isManualCheckbox = document.getElementById("manual-checkbox")
 
 function fillDirectionsDiv() {
     let directionsDiv = document.getElementById("directionsDiv")
-    directions.forEach(([dx, dy, dirName, symbol]) => {
+    directions.forEach(([dx, dy, dirName, symbol, defaultProbability]) => {
         let label = document.createElement("label")
-        let checkbox = document.createElement("input")
+        let numInput = document.createElement("input")
         let emoji = document.createElement("span")
-        checkbox.type = "checkbox"
-        checkbox.name = dirName
-        checkbox.value = dirName
-        checkbox.checked = true
-        label.style = "margin-right: 0.5rem; margin-bottom: 1rem"
-        label.appendChild(checkbox)
+        numInput.type = "number"
+        numInput.name = dirName
+        numInput.value = defaultProbability
+        numInput.min = 0
+        numInput.style = 'width: 3rem; margin-right: 0.3rem;'
+        label.style = "margin-right: 2rem; margin-bottom: 1rem"
+        label.appendChild(numInput)
         label.appendChild(document.createTextNode(dirName))
         emoji.appendChild(document.createTextNode(symbol))
         emoji.style = "margin-left: 0.3rem"
@@ -28,15 +29,16 @@ function fillDirectionsDiv() {
     })
 }
 
-function getPickedDirections() {
-    var checkedValues = []
-    var checkboxes = directionsDiv.getElementsByTagName("input")
-    for (var i = 0; i < checkboxes.length; i++) {
-        if (checkboxes[i].type === "checkbox" && checkboxes[i].checked) {
-            checkedValues.push(checkboxes[i].value)
+function getRepeatedDirs() {
+    let repeatedDirections = []
+    var numInputs = directionsDiv.getElementsByTagName("input")
+    for (var i = 0; i < numInputs.length; i++) {
+        const dir = directions.filter(([dx, dy, n]) => numInputs[i].name == n)[0]
+        for (let j = 0; j < (numInputs[i].value || 0); j++) {
+            repeatedDirections.push(dir)
         }
     }
-    return directions.filter(([dx, dy, n]) => checkedValues.includes(n))
+    return repeatedDirections
 }
 
 function renderWordSearch(grid, answers) {
@@ -156,7 +158,7 @@ generateButton.addEventListener("click", () => {
     if (!isManualCheckbox.checked) {
         const words = getWordsAuto()
         const size = Math.max(...[...words.map(w => w.length), Math.ceil(Math.sqrt(words.reduce((sum, word) => sum + word.length, 0) * 2))])
-        const dirs = getPickedDirections()
+        const dirs = getRepeatedDirs()
         grid = fillEmptyCells(placeWordsAuto(generateGrid(size), words, dirs))
     } else {
         var words = null
