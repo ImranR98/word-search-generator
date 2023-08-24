@@ -5,12 +5,14 @@ const saveButton = document.getElementById("save-btn")
 const wordSearchContainer = document.getElementById("word-search-container")
 const cellSizeInput = document.getElementById("cell-size-input")
 const borderThicknessInput = document.getElementById("border-thickness-input")
+const minGridSizeInput = document.getElementById("minimum-grid-size-input")
 const fontSizeInput = document.getElementById("font-size-input")
 const isManualCheckbox = document.getElementById("manual-checkbox")
 
 cellSizeInput.value = localStorage.getItem('cell-size-val') || cellSizeInput.value
 borderThicknessInput.value = localStorage.getItem('border-size-val') || borderThicknessInput.value
 fontSizeInput.value = localStorage.getItem('font-size-val') || fontSizeInput.value
+minGridSizeInput.value = localStorage.getItem('minimum-grid-size-val') || minGridSizeInput.value
 
 function fillDirectionsDiv() {
     let directionsDiv = document.getElementById("directionsDiv")
@@ -51,12 +53,14 @@ function renderWordSearch(grid, answers) {
     const cellSizePx = !!cellSizeInput.value ? cellSizeInput.value : 64
     const borderSizePx = !!borderThicknessInput.value ? borderThicknessInput.value : 2
     const fontSizePx = !!fontSizeInput.value ? fontSizeInput.value : 32
+    const minGridSize = !!minGridSizeInput.value ? minGridSizeInput.value : 10
     const numRows = grid.length
     const numCols = grid[0].length
 
     localStorage.setItem('cell-size-val', cellSizePx)
     localStorage.setItem('border-size-val', borderSizePx)
     localStorage.setItem('font-size-val', fontSizePx)
+    localStorage.setItem('minimum-grid-size-input', minGridSize)
 
     let html = `<table id="word-search-table" style="border-spacing: 0; border-collapse: separate; border: ${borderSizePx}px solid black;">`
     for (let i = 0; i < numRows; i++) {
@@ -169,7 +173,7 @@ generateButton.addEventListener("click", () => {
         const words = getWordsAuto()
         const size = Math.max(...[...words.map(w => w.length), Math.ceil(Math.sqrt(words.reduce((sum, word) => sum + word.length, 0) * 2))])
         const dirs = getRepeatedDirs()
-        grid = fillEmptyCells(placeWordsAuto(generateGrid(size), words, dirs))
+        grid = fillEmptyCells(placeWordsAuto(generateGrid(minGridSizeInput.value > size ? minGridSizeInput.value : size), words, dirs))
     } else {
         var words = null
         try {
