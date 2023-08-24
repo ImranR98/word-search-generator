@@ -8,6 +8,10 @@ const borderThicknessInput = document.getElementById("border-thickness-input")
 const fontSizeInput = document.getElementById("font-size-input")
 const isManualCheckbox = document.getElementById("manual-checkbox")
 
+cellSizeInput.value = localStorage.getItem('cell-size-val') || cellSizeInput.value
+borderThicknessInput.value = localStorage.getItem('border-size-val') || borderThicknessInput.value
+fontSizeInput.value = localStorage.getItem('font-size-val') || fontSizeInput.value
+
 function fillDirectionsDiv() {
     let directionsDiv = document.getElementById("directionsDiv")
     directions.forEach(([dx, dy, dirName, symbol, defaultProbability]) => {
@@ -16,7 +20,7 @@ function fillDirectionsDiv() {
         let emoji = document.createElement("span")
         numInput.type = "number"
         numInput.name = dirName
-        numInput.value = defaultProbability
+        numInput.value = localStorage.getItem(numInput.name + '-val') || defaultProbability
         numInput.min = 0
         numInput.style = 'width: 3rem; margin-right: 0.3rem;'
         label.style = "margin-right: 2rem; margin-bottom: 1rem"
@@ -33,6 +37,8 @@ function getRepeatedDirs() {
     let repeatedDirections = []
     var numInputs = directionsDiv.getElementsByTagName("input")
     for (var i = 0; i < numInputs.length; i++) {
+        localStorage.setItem(numInputs[i].name + '-val',
+            numInputs[i].value || 0)
         const dir = directions.filter(([dx, dy, n]) => numInputs[i].name == n)[0]
         for (let j = 0; j < (numInputs[i].value || 0); j++) {
             repeatedDirections.push(dir)
@@ -47,6 +53,10 @@ function renderWordSearch(grid, answers) {
     const fontSizePx = !!fontSizeInput.value ? fontSizeInput.value : 32
     const numRows = grid.length
     const numCols = grid[0].length
+
+    localStorage.setItem('cell-size-val', cellSizePx)
+    localStorage.setItem('border-size-val', borderSizePx)
+    localStorage.setItem('font-size-val', fontSizePx)
 
     let html = `<table id="word-search-table" style="border-spacing: 0; border-collapse: separate; border: ${borderSizePx}px solid black;">`
     for (let i = 0; i < numRows; i++) {

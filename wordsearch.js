@@ -6,8 +6,7 @@ const directions = [
     [1, 1, 'down-right', String.fromCodePoint(0x2198), 24],
     [-1, 1, 'up-right', String.fromCodePoint(0x2197), 24],
     [1, -1, 'down-left', String.fromCodePoint(0x2199), 3],
-    [-1, -1, 'up-left', String.fromCodePoint(0x2196), 3],
-
+    [-1, -1, 'up-left', String.fromCodePoint(0x2196), 3]
 ]
 
 // Function to generate a grid of a given size
