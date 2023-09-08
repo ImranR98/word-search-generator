@@ -13,17 +13,7 @@ const getLatestFileInDir = (dir) => {
 }
 
 const automateGenSimple = async (input, filename) => {
-    const browser = await remote({
-        capabilities: {
-            browserName: 'chrome', // You can use other browsers as well
-            'goog:chromeOptions': {
-                prefs: {
-                    'profile.default_content_setting_values.automatic_downloads': 1,
-                },
-            },
-        },
-    })
-
+    var browser;
     try {
         // Skip if okay
         const downloadsDir = path.join(os.homedir(), 'Downloads')
@@ -35,6 +25,16 @@ const automateGenSimple = async (input, filename) => {
         }
 
         // Init
+        browser = await remote({
+            capabilities: {
+                browserName: 'chrome', // You can use other browsers as well
+                'goog:chromeOptions': {
+                    prefs: {
+                        'profile.default_content_setting_values.automatic_downloads': 1,
+                    },
+                },
+            },
+        })
         await browser.url('https://wsg.imranr.dev/')
         await browser.waitUntil(async () => {
             const elem = await browser.$('#word-list')
@@ -62,7 +62,9 @@ const automateGenSimple = async (input, filename) => {
     } catch (error) {
         console.error('An error occurred:', error)
     } finally {
-        await browser.deleteSession()
+        if (browser) {
+            await browser.deleteSession()
+        }
     }
 }
 
