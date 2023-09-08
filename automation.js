@@ -12,13 +12,14 @@ const getLatestFileInDir = (dir) => {
     })
 }
 
-const automateGenSimple = async (input, filename) => {
+const automateGenSimple = async (input, filename, dir) => {
     var browser;
     try {
         // Skip if okay
         const downloadsDir = path.join(os.homedir(), 'Downloads')
-        const saveName = path.join(downloadsDir, `${filename}.png`);
-        const solvedSaveName = path.join(downloadsDir, `${filename}_solved.png`);
+        const saveDir = dir ?? downloadsDir
+        const saveName = path.join(saveDir, `${filename}.png`);
+        const solvedSaveName = path.join(saveDir, `${filename}_solved.png`);
         if (fs.existsSync(saveName) && fs.existsSync(solvedSaveName)) {
             console.log(`${saveName} and solution already exist, skipping...`)
             return
@@ -68,7 +69,7 @@ const automateGenSimple = async (input, filename) => {
     }
 }
 
-const main = async (inputFile) => {
+const main = async (inputFile, outputDir) => {
     const entries = fs.readFileSync(inputFile).toString().split('\n').map(s => s.trim()).filter(s => s.length > 0).map(s => {
         var parts = s.split(':').map(p => p.trim())
         if (parts.length == 1) {
@@ -82,8 +83,10 @@ const main = async (inputFile) => {
         }
     })
     for (let i = 0; i < entries.length; i++) {
-        await automateGenSimple(entries[i].inputText, entries[i].filename)
+        await automateGenSimple(entries[i].inputText, entries[i].filename, outputDir)
     }
 }
 
-main(process.argv[2] || 'automation-example.txt').then(() => console.log('Done!')).catch(e => console.error(e))
+const inputFile = process.argv[2] || '../word-search-generator/automation-example.txt'
+const outputDir = path.resolve(path.dirname(inputFile))
+main(inputFile, process.argv[2] ? outputDir : null).then(() => console.log('Done!')).catch(e => console.error(e))
