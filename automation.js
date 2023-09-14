@@ -12,7 +12,7 @@ const getLatestFileInDir = (dir) => {
     })
 }
 
-const automateGenSimple = async (input, filename, dir) => {
+const automateGenSimple = async (input, filename, dir, inputChanges = []) => {
     var browser;
     try {
         // Skip if okay
@@ -42,6 +42,14 @@ const automateGenSimple = async (input, filename, dir) => {
             return await elem.isExisting()
         }, { timeout: 10000, timeoutMsg: 'Element #word-list not found' })
 
+        // for (var i = 0; i < inputChanges.length; i++) {
+        //     try {
+        //         await (await browser.$(`#${inputChanges[i].id}`)).setValue(inputChanges[i].value)
+        //     } catch (e) {
+        //         console.error(e)
+        //     }
+        // }
+
         // Generate
         await (await browser.$('#word-list')).setValue(input)
         await (await browser.$('#generate-btn')).click()
@@ -69,7 +77,7 @@ const automateGenSimple = async (input, filename, dir) => {
     }
 }
 
-const main = async (inputFile, outputDir) => {
+const main = async (inputFile, outputDir, inputChanges) => {
     const entries = fs.readFileSync(inputFile).toString().split('\n').map(s => s.trim()).filter(s => s.length > 0).map(s => {
         var parts = s.split(':').map(p => p.trim())
         if (parts.length == 1) {
@@ -83,10 +91,11 @@ const main = async (inputFile, outputDir) => {
         }
     })
     for (let i = 0; i < entries.length; i++) {
-        await automateGenSimple(entries[i].inputText, entries[i].filename, outputDir)
+        await automateGenSimple(entries[i].inputText, entries[i].filename, outputDir, inputChanges)
     }
 }
 
 const inputFile = process.argv[2] || '../word-search-generator/automation-example.txt'
-const outputDir = path.resolve(path.dirname(inputFile))
-main(inputFile, process.argv[2] ? outputDir : null).then(() => console.log('Done!')).catch(e => console.error(e))
+const outputDir = process.argv[2] ? path.resolve(path.dirname(inputFile)) : null
+const inputChanges = process.argv[3] ? JSON.parse(process.argv[3]) : [{ id: 'minimum-grid-size-input', value: 20 }]
+main(inputFile, outputDir, inputChanges).then(() => console.log('Done!')).catch(e => console.error(e))
