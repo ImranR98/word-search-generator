@@ -42,13 +42,13 @@ const automateGenSimple = async (input, filename, dir, inputChanges = []) => {
             return await elem.isExisting()
         }, { timeout: 10000, timeoutMsg: 'Element #word-list not found' })
 
-        // for (var i = 0; i < inputChanges.length; i++) {
-        //     try {
-        //         await (await browser.$(`#${inputChanges[i].id}`)).setValue(inputChanges[i].value)
-        //     } catch (e) {
-        //         console.error(e)
-        //     }
-        // }
+        for (var i = 0; i < inputChanges.length; i++) {
+            try {
+                await (await browser.$(`#${inputChanges[i].id}`)).setValue(inputChanges[i].value)
+            } catch (e) {
+                console.error(e)
+            }
+        }
 
         // Generate
         await (await browser.$('#word-list')).setValue(input)
