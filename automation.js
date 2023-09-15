@@ -2,21 +2,24 @@ const fs = require('fs')
 const path = require('path')
 const os = require('os')
 const { remote } = require('webdriverio')
+const downloadsDir = path.join(os.homedir(), 'Downloads')
 
-const getLatestFileInDir = (dir) => {
-    const files = fs.readdirSync(dir)
-    return files.reduce((prev, current) => {
-        const prevTimestamp = fs.statSync(path.join(dir, prev)).mtime.getTime()
-        const currentTimestamp = fs.statSync(path.join(dir, current)).mtime.getTime()
-        return prevTimestamp > currentTimestamp ? prev : current
-    })
+const downloadHelper = async (downloadTriggerFn, afterDownloadedFn) => {
+    const getDownloads = () => fs.readdirSync(downloadsDir).filter(f => !(f.endsWith('crdownlaod') || f.endsWith('.part')))
+    const originalItems = getDownloads()
+    await downloadTriggerFn()
+    var newItems = []
+    while (newItems.length == 0) {
+        await new Promise(resolve => setTimeout(resolve, 500));
+        newItems = getDownloads().filter(e => originalItems.indexOf(e) < 0)
+    }
+    await afterDownloadedFn(newItems)
 }
 
 const automateGenSimple = async (input, filename, dir, inputChanges = []) => {
     var browser;
     try {
         // Skip if okay
-        const downloadsDir = path.join(os.homedir(), 'Downloads')
         const saveDir = dir ?? downloadsDir
         const saveName = path.join(saveDir, `${filename}.png`);
         const solvedSaveName = path.join(saveDir, `${filename}_solved.png`);
@@ -55,19 +58,29 @@ const automateGenSimple = async (input, filename, dir, inputChanges = []) => {
         await (await browser.$('#generate-btn')).click()
 
         // Save unsolved
-        await (await browser.$('#save-btn')).click()
-        await browser.acceptAlert()
-        await browser.pause(500)
-        fs.renameSync(path.join(downloadsDir, getLatestFileInDir(downloadsDir)), saveName)
+        await downloadHelper(
+            async () => {
+                await (await browser.$('#save-btn')).click()
+                await browser.acceptAlert()
+            },
+            async (downloadedFiles) => {
+                fs.renameSync(path.join(downloadsDir, downloadedFiles[0]), saveName)
+            }
+        )
 
         // Solve
         await (await browser.$('#solve-btn')).click()
 
         // Save solved
-        await (await browser.$('#save-btn')).click()
-        await browser.acceptAlert()
-        await browser.pause(500)
-        fs.renameSync(path.join(downloadsDir, getLatestFileInDir(downloadsDir)), solvedSaveName)
+        await downloadHelper(
+            async () => {
+                await (await browser.$('#save-btn')).click()
+                await browser.acceptAlert()
+            },
+            async (downloadedFiles) => {
+                fs.renameSync(path.join(downloadsDir, downloadedFiles[0]), solvedSaveName)
+            }
+        )
     } catch (error) {
         console.error('An error occurred:', error)
     } finally {
@@ -81,7 +94,7 @@ const main = async (inputFile, outputDir, inputChanges) => {
     const entries = fs.readFileSync(inputFile).toString().split('\n').map(s => s.trim()).filter(s => s.length > 0).map(s => {
         var parts = s.split(':').map(p => p.trim())
         if (parts.length == 1) {
-            parts = [(Math.random() * 10000).toString(), parts[0]]
+            parts = [parseInt((Math.random() * 10000)).toString(), parts[0]]
         } else if (parts.length > 2) {
             parts = [parts[0], parts.slice(1).join(':')]
         }
@@ -97,5 +110,5 @@ const main = async (inputFile, outputDir, inputChanges) => {
 
 const inputFile = process.argv[2] || '../word-search-generator/automation-example.txt'
 const outputDir = process.argv[2] ? path.resolve(path.dirname(inputFile)) : null
-const inputChanges = process.argv[3] ? JSON.parse(process.argv[3]) : [{ id: 'minimum-grid-size-input', value: 20 }]
+const inputChanges = process.argv[3] ? JSON.parse(process.argv[3]) : [{ id: 'minimum-grid-size-input', value: 12 }]
 main(inputFile, outputDir, inputChanges).then(() => console.log('Done!')).catch(e => console.error(e))
