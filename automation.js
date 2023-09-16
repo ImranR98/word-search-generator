@@ -47,11 +47,13 @@ const automateGenSimple = async (input, filename, dir, inputChanges = []) => {
 
         for (var i = 0; i < inputChanges.length; i++) {
             try {
-                const input = await (await browser.$(`#${inputChanges[i].id}`))
-                if (typeof inputChanges[i] === 'boolean') {
-                    input.checked = inputChanges[i].value
+                const input = (await browser.$(`#${inputChanges[i].id}`))
+                if (typeof inputChanges[i].value === 'boolean') {
+                    if ((await input.isSelected()) != inputChanges[i]) {
+                        await input.click()
+                    }
                 } else {
-                    input.setValue(inputChanges[i].value)
+                    await input.setValue(inputChanges[i].value)
                 }
             } catch (e) {
                 console.error(e)
@@ -61,7 +63,11 @@ const automateGenSimple = async (input, filename, dir, inputChanges = []) => {
         // Generate
         await (await browser.$('#word-list')).setValue(input)
         await (await browser.$('#generate-btn')).click()
-
+        await browser.waitUntil(async () => {
+            const elem = await browser.$('#word-search-table')
+            return await elem.isExisting()
+        }, { timeout: 10000, timeoutMsg: 'Element #word-search-table not found' })
+        browser.pause(10000)
         // Save unsolved
         await downloadHelper(
             async () => {
