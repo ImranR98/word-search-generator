@@ -8,6 +8,7 @@ const borderThicknessInput = document.getElementById("border-thickness-input")
 const minGridSizeInput = document.getElementById("minimum-grid-size-input")
 const fontSizeInput = document.getElementById("font-size-input")
 const isManualCheckbox = document.getElementById("manual-checkbox")
+const avoidOverlapsCheckbox = document.getElementById("no-overlapping-checkbox")
 
 cellSizeInput.value = localStorage.getItem('cell-size-val') || cellSizeInput.value
 borderThicknessInput.value = localStorage.getItem('border-size-val') || borderThicknessInput.value
@@ -173,7 +174,7 @@ generateButton.addEventListener("click", () => {
         const words = getWordsAuto()
         const size = Math.max(...[...words.map(w => w.length), Math.ceil(Math.sqrt(words.reduce((sum, word) => sum + word.length, 0) * 2))])
         const dirs = getRepeatedDirs()
-        grid = fillEmptyCells(placeWordsAuto(generateGrid(minGridSizeInput.value > size ? minGridSizeInput.value : size), words, dirs))
+        grid = fillEmptyCells(placeWordsAuto(generateGrid(minGridSizeInput.value > size ? minGridSizeInput.value : size), words, dirs, avoidOverlapsCheckbox.checked))
     } else {
         var words = null
         try {

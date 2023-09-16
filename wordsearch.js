@@ -25,7 +25,7 @@ function generateGrid(size) {
 function placeWordsManual(grid, words) {
     for (const word in words) {
         var i = 0
-        for (var [x,y] of words[word]) {
+        for (var [x, y] of words[word]) {
             grid[x][y] = word[i++]
         }
     }
@@ -33,7 +33,7 @@ function placeWordsManual(grid, words) {
 }
 
 // Function to place words in a grid
-function placeWordsAuto(grid, words, directions) {
+function placeWordsAuto(grid, words, directions, noOverlaps = false) {
     for (const word of words) {
         let placed = false
         while (!placed) {
@@ -43,29 +43,36 @@ function placeWordsAuto(grid, words, directions) {
             const direction = directions[Math.floor(Math.random() * directions.length)]
 
             // Try to place the word in that direction
-            placed = tryPlaceWord(grid, word, startX, startY, direction)
+            placed = tryPlaceWord(grid, word, startX, startY, direction, noOverlaps)
         }
     }
     return grid
 }
 
-// Function to try to place a word in a given direction
-function tryPlaceWord(grid, word, startX, startY, direction) {
+// Function to try to place a word in a given direction while minimizing overlap
+function tryPlaceWord(grid, word, startX, startY, direction, noOverlaps) {
     const len = word.length
     const endX = startX + direction[0] * (len - 1)
     const endY = startY + direction[1] * (len - 1)
+    // First see if the proposed placement would event fit
     if (endX < 0 || endX >= grid.length || endY < 0 || endY >= grid.length) {
-        // Word doesn't fit in the grid in this direction
         return false
     }
+    // Then see if it would overlap with any existing word (and if the overlapping letters are the same)
     for (let i = 0; i < len; i++) {
         const x = startX + direction[0] * i
         const y = startY + direction[1] * i
-        if (grid[x][y] !== '.' && grid[x][y] !== word[i]) {
+        if (grid[x][y] !== '.') {
             // Word intersects with another word
-            return false
+            if (grid[x][y] !== word[i]) {
+                return false
+            }
+            if (grid[x][y] === word[i] && noOverlaps) {
+                return false
+            }
         }
     }
+    // Place the word
     for (let i = 0; i < len; i++) {
         const x = startX + direction[0] * i
         const y = startY + direction[1] * i

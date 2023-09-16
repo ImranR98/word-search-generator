@@ -47,7 +47,12 @@ const automateGenSimple = async (input, filename, dir, inputChanges = []) => {
 
         for (var i = 0; i < inputChanges.length; i++) {
             try {
-                await (await browser.$(`#${inputChanges[i].id}`)).setValue(inputChanges[i].value)
+                const input = await (await browser.$(`#${inputChanges[i].id}`))
+                if (typeof inputChanges[i] === 'boolean') {
+                    input.checked = inputChanges[i].value
+                } else {
+                    input.setValue(inputChanges[i].value)
+                }
             } catch (e) {
                 console.error(e)
             }
@@ -110,5 +115,8 @@ const main = async (inputFile, outputDir, inputChanges) => {
 
 const inputFile = process.argv[2] || '../word-search-generator/automation-example.txt'
 const outputDir = process.argv[2] ? path.resolve(path.dirname(inputFile)) : null
-const inputChanges = process.argv[3] ? JSON.parse(process.argv[3]) : [{ id: 'minimum-grid-size-input', value: 12 }]
+const inputChanges = process.argv[3] ? JSON.parse(process.argv[3]) : [
+    { id: 'minimum-grid-size-input', value: 12 },
+    { id: 'no-overlapping-checkbox', value: true }
+]
 main(inputFile, outputDir, inputChanges).then(() => console.log('Done!')).catch(e => console.error(e))
