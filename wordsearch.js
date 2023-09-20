@@ -1,10 +1,10 @@
 const directions = [
-    [0, 1, 'right', String.fromCodePoint(0x27A1), 17],
+    [0, 1, 'right', String.fromCodePoint(0x27A1), 8],
     [0, -1, 'left', String.fromCodePoint(0x2B05), 0],
-    [1, 0, 'down', String.fromCodePoint(0x2B07), 13],
+    [1, 0, 'down', String.fromCodePoint(0x2B07), 8],
     [-1, 0, 'up', String.fromCodePoint(0x2B06), 0],
-    [1, 1, 'down-right', String.fromCodePoint(0x2198), 8],
-    [-1, 1, 'up-right', String.fromCodePoint(0x2197), 11],
+    [1, 1, 'down-right', String.fromCodePoint(0x2198), 26],
+    [-1, 1, 'up-right', String.fromCodePoint(0x2197), 26],
     [1, -1, 'down-left', String.fromCodePoint(0x2199), 0],
     [-1, -1, 'up-left', String.fromCodePoint(0x2196), 0]
 ]
@@ -33,7 +33,7 @@ function placeWordsManual(grid, words) {
 }
 
 // Function to place words in a grid
-function placeWordsAuto(grid, words, directions, sparse = false, maxAttemptsPerWord = 500000) {
+function placeWordsAuto(grid, words, directions, sparse = false, maxAttemptsPerWord = 5000) {
     for (const word of words) {
         let placed = false
         let attempts = 0
@@ -48,6 +48,7 @@ function placeWordsAuto(grid, words, directions, sparse = false, maxAttemptsPerW
             attempts++
         }
         if (!placed) {
+            console.log(`The word at index ${words.indexOf(word)} (${word}) could not be placed after ${attempts} attempts!`)
             return null
         }
     }

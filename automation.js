@@ -1,7 +1,7 @@
 const fs = require('fs')
 const path = require('path')
 const os = require('os')
-const { remote } = require('webdriverio')
+const { remote, Key } = require('webdriverio')
 const downloadsDir = path.join(os.homedir(), 'Downloads')
 
 const downloadHelper = async (downloadTriggerFn, afterDownloadedFn) => {
@@ -36,8 +36,10 @@ const automateGenSimple = async (input, filename, dir, inputChanges = []) => {
                     prefs: {
                         'profile.default_content_setting_values.automatic_downloads': 1,
                     },
+                    args: ['--auto-open-devtools-for-tabs'],
                 },
             },
+            connectionRetryTimeout: 10 * 60 * 1000 // Minutes to ms
         })
         await browser.url('https://wsg.imranr.dev/')
         await browser.waitUntil(async () => {

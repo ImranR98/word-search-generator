@@ -176,12 +176,15 @@ generateButton.addEventListener("click", () => {
         var generated = false
         var attempts = 0
         while (!generated) {
-            grid = generateGrid(size + (Math.floor(attempts/100000)))
+            const finalSize = size + (Math.floor(attempts / (size * 100)))
+            attempts++
+            grid = generateGrid(finalSize)
             grid = placeWordsAuto(grid, words, dirs, sparseCheckbox.checked)
             if (grid) {
                 generated = true
+            } else {
+                console.log(`Could not finish placing words (attempt ${attempts}) with grid size ${finalSize}`)
             }
-            attempts++
         }
         grid = fillEmptyCells(grid)
     } else {
