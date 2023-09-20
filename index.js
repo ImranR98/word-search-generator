@@ -15,6 +15,8 @@ borderThicknessInput.value = localStorage.getItem('border-size-val') || borderTh
 fontSizeInput.value = localStorage.getItem('font-size-val') || fontSizeInput.value
 minGridSizeInput.value = localStorage.getItem('minimum-grid-size-val') || minGridSizeInput.value
 
+sparseCheckbox.checked = true
+
 function fillDirectionsDiv() {
     let directionsDiv = document.getElementById("directionsDiv")
     directions.forEach(([dx, dy, dirName, symbol, defaultProbability]) => {
