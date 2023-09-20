@@ -123,7 +123,5 @@ const main = async (inputFile, outputDir, inputChanges) => {
 
 const inputFile = process.argv[2] || '../word-search-generator/automation-example.txt'
 const outputDir = process.argv[2] ? path.resolve(path.dirname(inputFile)) : null
-const inputChanges = process.argv[3] ? JSON.parse(process.argv[3]) : [
-    { id: 'sparse-checkbox', value: true }
-]
+const inputChanges = process.argv[3] ? JSON.parse(process.argv[3]) : []
 main(inputFile, outputDir, inputChanges).then(() => console.log('Done!')).catch(e => console.error(e))
