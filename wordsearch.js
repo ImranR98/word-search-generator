@@ -33,24 +33,29 @@ function placeWordsManual(grid, words) {
 }
 
 // Function to place words in a grid
-function placeWordsAuto(grid, words, directions, noOverlaps = false) {
+function placeWordsAuto(grid, words, directions, sparse = false, maxAttemptsPerWord = 1000) {
     for (const word of words) {
         let placed = false
-        while (!placed) {
+        let attempts = 0
+        while (!placed && (maxAttemptsPerWord === null || attempts < maxAttemptsPerWord)) {
             // Choose a random starting position and direction
             const startX = Math.floor(Math.random() * grid.length)
             const startY = Math.floor(Math.random() * grid.length)
             const direction = directions[Math.floor(Math.random() * directions.length)]
 
             // Try to place the word in that direction
-            placed = tryPlaceWord(grid, word, startX, startY, direction, noOverlaps)
+            placed = tryPlaceWord(grid, word, startX, startY, direction, sparse)
+            attempts++
+        }
+        if (!placed) {
+            return null
         }
     }
     return grid
 }
 
-// Function to try to place a word in a given direction while minimizing overlap
-function tryPlaceWord(grid, word, startX, startY, direction, noOverlaps) {
+// Function to try to place a word in a given direction
+function tryPlaceWord(grid, word, startX, startY, direction, sparse) {
     const len = word.length
     const endX = startX + direction[0] * (len - 1)
     const endY = startY + direction[1] * (len - 1)
@@ -67,8 +72,22 @@ function tryPlaceWord(grid, word, startX, startY, direction, noOverlaps) {
             if (grid[x][y] !== word[i]) {
                 return false
             }
-            if (grid[x][y] === word[i] && noOverlaps) {
+            if (grid[x][y] === word[i] && sparse) {
                 return false
+            }
+        }
+        if (sparse) { // Aside from avoiding direct overlaps, 'sparse' also means a 1-cell gap in all non-diagonal directions
+            var gapDirs = directions.filter(d => ['up', 'down', 'left', 'right'].indexOf(d[2]) >= 0)
+            gapDirs = gapDirs.filter(d => !((d[0] == (direction[0] * -1)) && (d[1] == (direction[1] * -1)))) // Not including the current word's own letters
+            for (let ind = 0; ind < gapDirs.length; ind++) {
+                var gapCell = [x + gapDirs[ind][0], y + gapDirs[ind][1]]
+                if (
+                    (gapCell[0] >= 0 && gapCell[1] >= 0) &&
+                    (gapCell[0] < grid.length && gapCell[1] < grid.length) &&
+                    grid[gapCell[0]][gapCell[1]] !== '.'
+                ) {
+                    return false
+                }
             }
         }
     }

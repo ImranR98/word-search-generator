@@ -8,7 +8,7 @@ const borderThicknessInput = document.getElementById("border-thickness-input")
 const minGridSizeInput = document.getElementById("minimum-grid-size-input")
 const fontSizeInput = document.getElementById("font-size-input")
 const isManualCheckbox = document.getElementById("manual-checkbox")
-const avoidOverlapsCheckbox = document.getElementById("no-overlapping-checkbox")
+const sparseCheckbox = document.getElementById("sparse-checkbox")
 
 cellSizeInput.value = localStorage.getItem('cell-size-val') || cellSizeInput.value
 borderThicknessInput.value = localStorage.getItem('border-size-val') || borderThicknessInput.value
@@ -142,7 +142,6 @@ const getWordsManual = () => {
             )[0]
         }
     })
-    console.log(words)
     var solutions = {}
     words.forEach(word => {
         solutions[word.word] = []
@@ -151,7 +150,6 @@ const getWordsManual = () => {
             solutions[word.word].push([word.x + (word.direction[0] * i), word.y + (word.direction[1] * i)])
         }
     })
-    console.log(solutions)
     return solutions
 }
 
@@ -172,9 +170,20 @@ generateButton.addEventListener("click", () => {
     var canContinue = true
     if (!isManualCheckbox.checked) {
         const words = getWordsAuto()
-        const size = Math.max(...[...words.map(w => w.length), Math.ceil(Math.sqrt(words.reduce((sum, word) => sum + word.length, 0) * 2))])
+        const wordBasedSize = Math.max(...[...words.map(w => w.length), Math.ceil(Math.sqrt(words.reduce((sum, word) => sum + word.length, 0) * 2))])
+        const size = Number.parseInt(minGridSizeInput.value > wordBasedSize ? minGridSizeInput.value : wordBasedSize)
         const dirs = getRepeatedDirs()
-        grid = fillEmptyCells(placeWordsAuto(generateGrid(minGridSizeInput.value > size ? minGridSizeInput.value : size), words, dirs, avoidOverlapsCheckbox.checked))
+        var generated = false
+        var attempts = 0
+        while (!generated) {
+            grid = generateGrid(size + (attempts * 2))
+            grid = placeWordsAuto(grid, words, dirs, sparseCheckbox.checked)
+            if (grid) {
+                generated = true
+            }
+            attempts++
+        }
+        grid = fillEmptyCells(grid)
     } else {
         var words = null
         try {
