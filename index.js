@@ -176,7 +176,7 @@ generateButton.addEventListener("click", () => {
         var generated = false
         var attempts = 0
         while (!generated) {
-            grid = generateGrid(size + (attempts * 2))
+            grid = generateGrid(size + (Math.floor(attempts/100000)))
             grid = placeWordsAuto(grid, words, dirs, sparseCheckbox.checked)
             if (grid) {
                 generated = true

@@ -33,7 +33,7 @@ function placeWordsManual(grid, words) {
 }
 
 // Function to place words in a grid
-function placeWordsAuto(grid, words, directions, sparse = false, maxAttemptsPerWord = 1000) {
+function placeWordsAuto(grid, words, directions, sparse = false, maxAttemptsPerWord = 500000) {
     for (const word of words) {
         let placed = false
         let attempts = 0
