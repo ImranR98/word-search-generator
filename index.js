@@ -113,7 +113,7 @@ const toggleSolved = (override) => {
 }
 
 const isManualFormat = () => {
-    var lines = wordListInput.value.split('\n')
+    var lines = wordListInput.value.trim().split('\n')
     for (var i in lines) {
         var items = lines[i].split(',')
         if (
@@ -132,7 +132,7 @@ const isManualFormat = () => {
 }
 
 const getWordsManual = () => {
-    var words = wordListInput.value.split('\n').map(line => {
+    var words = wordListInput.value.trim().split('\n').map(line => {
         var items = line.split(',')
         return {
             word: items[0],
@@ -157,6 +157,21 @@ const getWordsManual = () => {
 
 const getWordsAuto = () => {
     return wordListInput.value.split(',').join('\n').split("\n").map((word) => word.trim().split(' ').join('')).filter((word) => word.length > 0)
+}
+
+const hashString = (str, seed = 0) => { // https://stackoverflow.com/a/52171480/9253127
+    let h1 = 0xdeadbeef ^ seed, h2 = 0x41c6ce57 ^ seed;
+    for (let i = 0, ch; i < str.length; i++) {
+        ch = str.charCodeAt(i);
+        h1 = Math.imul(h1 ^ ch, 2654435761);
+        h2 = Math.imul(h2 ^ ch, 1597334677);
+    }
+    h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507);
+    h1 ^= Math.imul(h2 ^ (h2 >>> 13), 3266489909);
+    h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507);
+    h2 ^= Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+
+    return 4294967296 * (2097151 & h2) + (h1 >>> 0);
 }
 
 const findLargestOrSmallestNumber = (arr, smallest) => {
@@ -245,7 +260,7 @@ solveButton.addEventListener("click", () => {
     toggleSolved()
 })
 saveButton.addEventListener("click", () => {
-    saveDivAsPng('word-search-table', 'word_search_' + Math.ceil((Math.random() * 10000)).toString(), 5)
+    saveDivAsPng('word-search-table', `word_search_${hashString(wordListInput.value.trim())}${solved ? '_solved' : ''}`, 5)
 })
 function saveDivAsPng(divId, filename) {
     const defaultScale = 5
