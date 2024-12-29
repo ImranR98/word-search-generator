@@ -41,7 +41,7 @@ const automateGenSimple = async (input, filename, dir, inputChanges = []) => {
             },
             connectionRetryTimeout: 10 * 60 * 1000 // Minutes to ms
         })
-        await browser.url('https://wsg.imranr.dev/')
+        await browser.url('file://' + path.resolve(__dirname, 'index.html'))
         await browser.waitUntil(async () => {
             const elem = await browser.$('#word-list')
             return await elem.isExisting()

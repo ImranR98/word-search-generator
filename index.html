@@ -9,7 +9,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://fonts.googleapis.com/css2?family=Poppins&amp;display=swap" rel="stylesheet">
   <style>
-    #word-search-container {
+    #word-search-container-container {
       overflow-x: scroll;
       -ms-overflow-style: none;
       scrollbar-width: none;
@@ -19,7 +19,8 @@
       display: none;
     }
   </style>
-  <script defer data-domain="wsg.imranr.dev" src="https://plausible.imranr.dev/js/script.file-downloads.outbound-links.js"></script>
+  <script defer data-domain="wsg.imranr.dev"
+    src="https://plausible.imranr.dev/js/script.file-downloads.outbound-links.js"></script>
 </head>
 
 <body>
@@ -27,7 +28,8 @@
     <h1>Word Search Generator</h1>
     <div class="form">
       <label for="word-list">Enter words:</label>
-      <textarea id="word-list" rows="9" placeholder="apple&#10;mango&#10;banana&#10;&#10;OR (for manual mode)...&#10;&#10;apple,0,0,down&#10;mango,2,2,r&#10;banana,7,7,dr"></textarea>
+      <textarea id="word-list" rows="9"
+        placeholder="apple&#10;mango&#10;banana&#10;&#10;OR (for manual mode)...&#10;&#10;apple,0,0,down&#10;mango,2,2,r&#10;banana,7,7,dr"></textarea>
       <label for="directionsDiv" style="margin-top: 1rem;">Directions: </label>
       <div id="directionsDiv" style="display: flex; flex-wrap: wrap;"></div>
       <div style="display: flex; flex-wrap: wrap; margin-bottom: 2rem;">
@@ -45,13 +47,15 @@
         </div>
         <div style="display: flex; margin-right: 2rem;">
           <div style="margin-right: 0.3rem;">
-            <input id="border-thickness-input" name="border-thickness-input" type="number" style="width: 2rem;" value="2" min="1">
+            <input id="border-thickness-input" name="border-thickness-input" type="number" style="width: 2rem;"
+              value="2" min="1">
           </div>
           <label style="margin-top: 0.1rem;">Border Thickness</label>
         </div>
         <div style="display: flex; margin-right: 2rem;">
           <div style="margin-right: 0.3rem;">
-            <input id="minimum-grid-size-input" name="minimum-grid-size-input" type="number" style="width: 2rem;" value="10" min="1">
+            <input id="minimum-grid-size-input" name="minimum-grid-size-input" type="number" style="width: 2rem;"
+              value="10" min="1">
           </div>
           <label style="margin-top: 0.1rem;">Minimum Grid Size</label>
         </div>
@@ -78,7 +82,10 @@
       <button id="solve-btn" style="display: none;"></button>
       <button id="save-btn" style="display: none;">Save as Image</button>
     </div>
-    <div id="word-search-container"></div>
+    <div id="word-search-container-container">
+      <div id="word-search-container"></div>
+      <canvas id="answers-canvas" style="position: absolute; pointer-events: none;"></canvas>
+    </div>
   </div>
 
   <script src="wordsearch.js?v=10"></script>

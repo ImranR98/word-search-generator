@@ -52,7 +52,7 @@ function getRepeatedDirs() {
     return repeatedDirections
 }
 
-function renderWordSearch(grid, answers) {
+function renderWordSearch(grid) {
     const cellSizePx = !!cellSizeInput.value ? cellSizeInput.value : 64
     const borderSizePx = !!borderThicknessInput.value ? borderThicknessInput.value : 2
     const fontSizePx = !!fontSizeInput.value ? fontSizeInput.value : 32
@@ -69,27 +69,10 @@ function renderWordSearch(grid, answers) {
     for (let i = 0; i < numRows; i++) {
         html += '<tr">'
         for (let j = 0; j < numCols; j++) {
-            let isBold = false
             let cell = grid[i][j]
             const upperCase = document.getElementById('uppercase-checkbox').checked
             cell = upperCase ? cell.toUpperCase() : cell.toLowerCase()
-            let color = 'black'
-            if (!answers) {
-                answers = {}
-            }
-            const solutions = Object.values(answers)
-            for (let k = 0; k < solutions.length; k++) {
-                const solution = solutions[k]
-                for (let l = 0; l < solution.length; l++) {
-                    const coords = solution[l]
-                    if (coords[0] === i && coords[1] === j) {
-                        color = getColor(k)
-                        isBold = true
-                        break
-                    }
-                }
-            }
-            html += '<td style="min-width: ' + cellSizePx + 'px; width: ' + cellSizePx + 'px; height: ' + cellSizePx + 'px; border: ' + borderSizePx + 'px solid black; background-color: ' + (isBold ? color : 'White') + '; font-weight: ' + (isBold ? 'bold' : 'normal') + '; text-align: center; font-size: ' + fontSizePx + 'px;" class="tooltip">'
+            html += '<td style="min-width: ' + cellSizePx + 'px; width: ' + cellSizePx + 'px; height: ' + cellSizePx + 'px; border: ' + borderSizePx + 'px solid black; background-color: White; font-weight: normal; text-align: center; font-size: ' + fontSizePx + 'px;" class="tooltip">'
                 + cell
                 + '<span class="tooltiptext" style="width: ' + cellSizePx + 'px; font-size: ' + fontSizePx + 'px;">' + i + ',' + j + '</span>'
                 + '</td>'
@@ -97,8 +80,65 @@ function renderWordSearch(grid, answers) {
         html += '</tr>'
     }
     html += '</table>'
-
     return html
+}
+
+const clearAnswerLines = () => {
+    const canvas = document.getElementById('answers-canvas');
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+}
+
+const positionAnswersCanvas = () => {
+    const table = document.getElementById('word-search-table');
+    const canvas = document.getElementById('answers-canvas');
+    const rect = table.getBoundingClientRect();
+    canvas.style.left = `${rect.left}px`;
+    canvas.style.top = `${rect.top}px`;
+    canvas.width = table.offsetWidth;
+    canvas.height = table.offsetHeight;
+}
+
+function synchronizeAnswersCanvas() {
+    const container = document.getElementById('word-search-container-container');
+    const canvas = document.getElementById('answers-canvas');
+    canvas.style.transform = `translate(${-container.scrollLeft}px, ${-container.scrollTop}px)`;
+}
+
+const updateAnswerLines = (grid) => {
+    const getAnswerCoordinates = (row, col) => {
+        const table = document.getElementById('word-search-table');
+        const cell = table.rows[row].cells[col];
+        const rect = cell.getBoundingClientRect();
+        const tableRect = table.getBoundingClientRect();
+        return {
+            x: rect.left - tableRect.left + rect.width / 2,
+            y: rect.top - tableRect.top + rect.height / 2
+        };
+    }
+    const drawAnswerLine = (startRow, startCol, endRow, endCol) => {
+        const canvas = document.getElementById('answers-canvas');
+        const ctx = canvas.getContext('2d');
+        const start = getAnswerCoordinates(startRow, startCol);
+        const end = getAnswerCoordinates(endRow, endCol);
+        ctx.strokeStyle = 'black';
+        ctx.lineWidth = 4;
+        ctx.beginPath();
+        ctx.moveTo(start.x, start.y);
+        ctx.lineTo(end.x, end.y);
+        ctx.stroke();
+    }
+    clearAnswerLines()
+    if (solved) {
+        positionAnswersCanvas();
+        const solutions = isManualCheckbox.checked ? getWordsManual() : solveWordSearch(grid, getWordsAuto())
+        console.log(solutions)
+        Object.keys(solutions).forEach(key => {
+            const startCell = solutions[key][0]
+            const endCell = solutions[key][solutions[key].length - 1]
+            drawAnswerLine(startCell[0], startCell[1], endCell[0], endCell[1])
+        })
+    }
 }
 
 function getColor(index) {
@@ -110,6 +150,11 @@ var solved = false
 const toggleSolved = (override) => {
     solved = override == undefined ? !solved : override
     solveButton.innerHTML = (solved ? 'Unsolve' : 'Solve') + ' Word Search'
+    if (solved) {
+        updateAnswerLines(getCurrentGrid())
+    } else {
+        clearAnswerLines()
+    }
 }
 
 const isManualFormat = () => {
@@ -153,6 +198,21 @@ const getWordsManual = () => {
         }
     })
     return solutions
+}
+
+const getCurrentGrid = () => {
+    const table = wordSearchContainer.querySelector("table")
+    const numRows = table.rows.length
+    const numCols = table.rows[0].cells.length
+    const grid = []
+    for (let i = 0; i < numRows; i++) {
+        const row = []
+        for (let j = 0; j < numCols; j++) {
+            row.push(table.rows[i].cells[j].innerText)
+        }
+        grid.push(row)
+    }
+    return grid
 }
 
 const getWordsAuto = () => {
@@ -236,52 +296,75 @@ generateButton.addEventListener("click", () => {
         wordSearchContainer.innerHTML = wordSearchHtml
         solveButton.style.display = 'block'
         saveButton.style.display = 'block'
+        clearAnswerLines()
         toggleSolved(false)
     }
 })
 solveButton.addEventListener("click", () => {
-    // Get the current word search grid
-    const table = wordSearchContainer.querySelector("table")
-    const numRows = table.rows.length
-    const numCols = table.rows[0].cells.length
-    const grid = []
-    for (let i = 0; i < numRows; i++) {
-        const row = []
-        for (let j = 0; j < numCols; j++) {
-            row.push(table.rows[i].cells[j].innerText)
-        }
-        grid.push(row)
-    }
-    // Solve the word search
-    const solutions = isManualCheckbox.checked ? getWordsManual() : solveWordSearch(grid, getWordsAuto())
-    // Render the word search
-    const wordSearchHtml = renderWordSearch(grid, solved ? null : solutions)
+    const grid = getCurrentGrid()
+    const wordSearchHtml = renderWordSearch(grid)
     wordSearchContainer.innerHTML = wordSearchHtml
     toggleSolved()
 })
 saveButton.addEventListener("click", () => {
-    saveDivAsPng('word-search-table', `word_search_${hashString(wordListInput.value.trim())}${solved ? '_solved' : ''}`, 5)
+    saveAsImage(`word_search_${hashString(wordListInput.value.trim())}${solved ? '_solved' : ''}`)
 })
-function saveDivAsPng(divId, filename) {
+
+const saveAsImage = async (filename) => {
+    const table = document.getElementById('word-search-table');
+    const highlightCanvas = document.getElementById('answers-canvas');
+
     const defaultScale = 5
     let scale = prompt('Enter size multiplier (default is ' + defaultScale + ')') || defaultScale
-    const element = document.getElementById(divId)
     try {
         Number.parseInt(scale)
     } catch (e) {
         scale = defaultScale
     }
-    html2canvas(element, {
-        scale: scale,
-        useCORS: true,
-        allowTaint: true,
-    }).then(function (canvas) {
-        const link = document.createElement('a')
-        link.download = filename + '.png'
-        link.href = canvas.toDataURL('image/png')
-        link.click()
-    })
+
+    const tableCanvas = await html2canvas(table, { scale, backgroundColor: null });
+
+    // Create a new canvas to merge the table and highlights
+    const mergedCanvas = document.createElement('canvas');
+    const ctx = mergedCanvas.getContext('2d');
+
+    // Set the merged canvas dimensions to match the scaled table canvas
+    mergedCanvas.width = tableCanvas.width;
+    mergedCanvas.height = tableCanvas.height;
+
+    // Scale the highlight canvas to match the table canvas
+    const tempHighlightCanvas = document.createElement('canvas');
+    const tempHighlightCtx = tempHighlightCanvas.getContext('2d');
+    tempHighlightCanvas.width = tableCanvas.width;
+    tempHighlightCanvas.height = tableCanvas.height;
+
+    // Draw the highlight canvas onto the temporary scaled canvas
+    tempHighlightCtx.drawImage(
+        highlightCanvas,
+        0, 0, highlightCanvas.width, highlightCanvas.height, // Source dimensions
+        0, 0, tempHighlightCanvas.width, tempHighlightCanvas.height // Target dimensions
+    );
+
+    // Draw the table canvas onto the merged canvas
+    ctx.drawImage(tableCanvas, 0, 0);
+
+    // Draw the scaled highlight canvas on top of the merged canvas
+    ctx.drawImage(tempHighlightCanvas, 0, 0);
+
+    // Convert the merged canvas to an image
+    const finalImage = mergedCanvas.toDataURL('image/png');
+
+    // Open the image in a new tab or save it
+    const link = document.createElement('a');
+    link.href = finalImage;
+    link.download = filename + '.png';
+    link.click();
 }
 
-
 fillDirectionsDiv()
+
+const container = document.getElementById('word-search-container-container').addEventListener('scroll', synchronizeAnswersCanvas);
+window.addEventListener('resize', () => {
+    positionAnswersCanvas()
+    synchronizeAnswersCanvas()
+});
