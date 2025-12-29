@@ -9,8 +9,10 @@ const minGridSizeInput = document.getElementById("minimum-grid-size-input")
 const fontSizeInput = document.getElementById("font-size-input")
 const isManualCheckbox = document.getElementById("manual-checkbox")
 const sparseCheckbox = document.getElementById("sparse-checkbox")
+const filenumInput = document.getElementById("file-num-input")
 
 cellSizeInput.value = localStorage.getItem('cell-size-val') || cellSizeInput.value
+filenumInput.value = localStorage.getItem('file-num-val') || filenumInput.value
 borderThicknessInput.value = localStorage.getItem('border-size-val') || borderThicknessInput.value
 fontSizeInput.value = localStorage.getItem('font-size-val') || fontSizeInput.value
 minGridSizeInput.value = localStorage.getItem('minimum-grid-size-val') || minGridSizeInput.value
@@ -306,8 +308,17 @@ solveButton.addEventListener("click", () => {
     wordSearchContainer.innerHTML = wordSearchHtml
     toggleSolved()
 })
+
+let lastSavedWordListHash = ''
 saveButton.addEventListener("click", () => {
-    saveAsImage(`word_search_${hashString(wordListInput.value.trim())}${solved ? '_solved' : ''}`)
+    let fileNum = !!filenumInput.value ? filenumInput.value : 1
+    const wordListHash = hashString(wordListInput.value.trim())
+    if (lastSavedWordListHash != wordListHash && lastSavedWordListHash != '') {
+        localStorage.setItem('file-num-val', ++fileNum)
+        filenumInput.value = fileNum
+    }
+    saveAsImage(`word_search_${fileNum}_${wordListHash}${solved ? '_solved' : ''}`)
+    lastSavedWordListHash = wordListHash
 })
 
 const saveAsImage = async (filename) => {
